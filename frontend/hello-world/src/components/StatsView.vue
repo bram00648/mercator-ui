@@ -13,7 +13,8 @@
         <tr v-for="stat in stats" :key="stat.visit_id">
           <td>{{ stat.visit_id }}</td>
           <td>{{ stat.domain_name }}</td>
-          <td>{{ stat.detected_technologies.join(", ") }}</td>
+          <td v-if="stat.detected_technologies">{{ stat.detected_technologies.join(", ") }}</td>
+          <td v-else>N/A</td>
         </tr>
       </tbody>
     </table>
