@@ -38,24 +38,39 @@ class ParquetReader:
 
                 try:
                     duckdb_conn = duckdb.connect(":memory:")
-                    column_data = duckdb_conn.sql(f"SELECT visitRequest FROM read_parquet('{file_path}') LIMIT 10").fetchall()
-                    current_app.logger.info(column_data ) # for each column we should get the data and convert it to json manually because parquet
-                    """
-                    1. read for every column the data seperately because it is always stored in dictionary lik eojbect
-                    2. every column belongs to 1 parent json object which is defined by for example the visitId? i think
-                    3. construct a valid json object from this data from parquet but it will require parsing
-                    4. doing this should make it possible to conver other parquet files in a similar way. this way we can always acess Json data         
-                    """
-                    processed_rows = []
+                    json_data_array = duckdb_conn.sql(f"""
+                                                  
+                                                  SELECT json(
+                                                  json_object(
+                                                    'vistId', visitId,
+                                                    'domainName', domainName,
+                                                    'timestamp', timestamp,
+                                                    'numConversations', numConversations,
+                                                    'hosts', hosts,
+                                                    'crawlStatus', crawlStatus
+                                                    )
+                                                  ) as result
+                                                    FROM '{file_path}'
+                                                  
+                                                  """).fetchall(    )
+                    current_app.logger.info(json_data_array ) # for each column we should get the data 
+                    objects = []
+                    for i in json_data_array:
+                        current_app.logger.info("here: " + i[0] + "\n"+ "\n"+ "\n"+ "\n"+ "\n"+ "\n") 
+                        
+                        objects.append(json.loads(i[0]))
+                        
+                    objects_dumps_data = json.dumps(objects, indent=2)
+                    current_app.logger.info(objects_dumps_data)
+                    
+                    #clean_data = clean_parquet_data(column_data)
+                    #current_app.logger.info(clean_data)
 
-                    clean_data = clean_parquet_data(column_data)
-                    current_app.logger.info(clean_data)
+                    #final_column_data_json = {"visitRequest": processed_rows}
 
-                    final_column_data_json = {"visitRequest": processed_rows}
+                    #final_data = json.dumps(final_column_data_json, indent=2)
 
-                    final_data = json.dumps(final_column_data_json, indent=2)
-
-                    current_app.logger.info(final_data)
+                    #current_app.logger.info(final_data)
                 
                     
                 except Exception as e:
