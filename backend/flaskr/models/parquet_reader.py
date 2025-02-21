@@ -57,12 +57,12 @@ class ParquetReader:
                 json_data_array = duckdb_conn.sql(f"""
                 select json(
                     json_object(
-                       'visitRequest', visitRequest,
-                       'fullScanEntity', fullScanEntity,
-                       'certificateChain', certificateChain,
-                       'peerCertificate', peerCertificate,
-                       'fresh', fresh,
-                       'visitId', visitId,
+                        'visitRequest', visitRequest,
+                        'fullScanEntity', fullScanEntity,
+                        'certificateChain', certificateChain,
+                        'peerCertificate', peerCertificate,
+                        'fresh', fresh,
+                        'visitId', visitId,
                         'domainName', domainName,
                         'timestamp', timestamp,
                         'numConversations', numConversations,

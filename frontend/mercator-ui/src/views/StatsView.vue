@@ -1,11 +1,7 @@
 <template>
   <div class="stats-view">
     <h1>Technology Stats</h1>
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <TechnologyStats
-      msg="stats of all technologies for given id"
-      :detected_technologies="stats?.detected_technologies"
-    />
+    <TechnologyStats msg="All stats for all entries:" :stats="stats" />
   </div>
 </template>
 
@@ -21,7 +17,7 @@ import statsService from "@/services/statsService";
   },
 })
 export default class StatsView extends Vue {
-  stats: TechnologyStat | null = null;
+  stats: TechnologyStat[] = [];
 
   async mounted() {
     try {

@@ -1,44 +1,25 @@
 <template>
-  <div class="hello">
-    <h2>detected tchnologies</h2>
-    <ul v-if="detected_technologies?.length">
-      <li v-for="(tech, index) in detected_technologies" :key="index">
-        {{ tech.name }}
+  <div>
+    <h2>{{ msg }}</h2>
+    <ul>
+      <li v-for="stat in stats" :key="stat.visitId">
+        {{ stat.visitId }} - {{ stat.web_domainName }}
       </li>
     </ul>
-    <h1>{{ msg }}</h1>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { defineComponent, PropType } from "vue";
+import { TechnologyStat } from "@/types";
 
-@Options({
+export default defineComponent({
   props: {
     msg: String,
-    detected_technologies: Array,
+    stats: {
+      type: Array as PropType<TechnologyStat[]>,
+      required: true,
+    },
   },
-})
-export default class TechnologyStats extends Vue {
-  msg!: string;
-  detected_technologies!: Array<{ name: string }>;
-}
+});
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
