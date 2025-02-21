@@ -7,19 +7,6 @@ from flaskr.config import Config
 import re
 import uuid
 import traceback
-
-def clean_parquet_data(data):
-    """Converts tuples containing dictionaries with UUIDs into a valid JSON array."""
-    cleaned_data = []
-
-    for row in data:
-        record = row[0]  # Extract the dictionary from the tuple
-        cleaned_record = {k: str(v) if isinstance(v, uuid.UUID) else v for k, v in record.items()}
-        cleaned_data.append(cleaned_record)
-
-    return json.dumps(cleaned_data, indent=2)
-
-
 class ParquetReader:
 
     
@@ -81,7 +68,7 @@ class ParquetReader:
                     )
                 ) as result
             from joined_tls_smtp_web;""").fetchall()
-                current_app.logger.info(json_data_array ) # for each column we should get thedata 
+                current_app.logger.info(json_data_array )
                 objects = []
                 for i in json_data_array:
                     current_app.logger.info("here: " + i[0] + "\n"+ "\n"+ "\n"+ "\n"+ "\n"+ "\n") 
