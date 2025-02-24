@@ -16,3 +16,10 @@ def get_stats_by_domain_name():
     domain_name = request.args.get("domain_name")
     data = ParquetReader.read_parquet_data_by_domain_name(domain_name)
     return jsonify(data)
+
+@stats_bp.route("/get_crawl_ids_by_domain_name", methods=["GET"])
+def get_crawl_ids_by_domain_name():
+    """Endpoint to get crawl visit ids by domain name."""
+    domain_name = request.args.get("domain_name")
+    data = ParquetReader.read_parquet_get_crawl_visit_ids_of_domain_name(domain_name)
+    return jsonify(data)

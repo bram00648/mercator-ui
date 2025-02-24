@@ -179,4 +179,30 @@ SELECT domainName FROM '{WEB}' WHERE domainName = '{domain_name}';
                 return {"error": str(e)}
        
         return {"error": "Domain name not found"}
+    
 
+    def read_parquet_get_crawl_visit_ids_of_domain_name(domain_name):
+        file_paths = ParquetReader.get_file_paths()
+
+        SMTP = file_paths[0]
+        TLS = file_paths[1]
+        WEB = file_paths[2]
+
+        duckdb_conn = duckdb.connect(":memory:")
+        data = duckdb_conn.sql(f"""
+SELECT visitId, domainName, crawlFinished  FROM '{WEB}' WHERE domainName = '{domain_name}';
+                                                    """).fetchall()
+        
+
+        current_app.logger.info("retrieved_domain_name: " + str(data))
+
+        result = [
+            {"visitId": str(row[0]), "domainName": row[1], "CrawlFinished": row[2]}
+            for row in data
+        ]
+
+        return result
+        
+
+        
+        
