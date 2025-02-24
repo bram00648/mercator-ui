@@ -39,12 +39,16 @@ class ParquetReader:
 
         try:
             duckdb_conn = duckdb.connect(":memory:")
-            duckdb_conn.execute(f"""
-                    CREATE TABLE joined_tls_smtp_web as select * from '{TLS}' tl
-                    INNER JOIN '{SMTP}' sm ON tl.visitRequest.visitId = sm.visitId
-                    INNER JOIN '{WEB}' w on sm.visitId = w.visitId;
-                                    """)
+
             json_data_array = duckdb_conn.sql(f"""
+                                              
+            WITH joined_tls_smtp_web AS (
+                    SELECT * FROM '{TLS}' tl
+                    INNER JOIN '{SMTP}' sm ON tl.visitRequest.visitId = sm.visitId
+                    INNER JOIN '{WEB}' w ON sm.visitId = w.visitId
+                    
+            )
+                                              
             select json(
                 json_object(
                         'visitRequest', visitRequest,
@@ -123,12 +127,16 @@ SELECT domainName FROM '{WEB}' WHERE domainName = '{domain_name}';
 
             try:
                 duckdb_conn = duckdb.connect(":memory:")
-                duckdb_conn.execute(f"""
-                    CREATE TABLE joined_tls_smtp_web as select * from '{TLS}' tl
-                    INNER JOIN '{SMTP}' sm ON tl.visitRequest.visitId = sm.visitId
-                    INNER JOIN '{WEB}' w on sm.visitId = w.visitId;
-                                    """)
+
                 json_data_array = duckdb_conn.sql(f"""
+                WITH joined_tls_smtp_web AS (
+                    SELECT * FROM '{TLS}' tl
+                    INNER JOIN '{SMTP}' sm ON tl.visitRequest.visitId = sm.visitId
+                    INNER JOIN '{WEB}' w ON sm.visitId = w.visitId
+                    
+                )
+                                                  
+
             select json(
                                                   
                 json_object(
@@ -229,15 +237,16 @@ SELECT visitId, domainName, crawlFinished  FROM '{WEB}' WHERE domainName = '{dom
             current_app.logger.info(f"found visit id: {retrieved_visit_id[0][0]}")
 
             try:
-                duckdb_conn.execute(f"""
-                    CREATE TABLE joined_tls_smtp_web AS SELECT * FROM '{TLS}' tl
+
+                json_data_array = duckdb_conn.sql(f"""
+                WITH joined_tls_smtp_web AS (
+                    SELECT * FROM '{TLS}' tl
                     INNER JOIN '{SMTP}' sm ON tl.visitRequest.visitId = sm.visitId
                     INNER JOIN '{WEB}' w ON sm.visitId = w.visitId
-                    WHERE CAST(w.visitId AS VARCHAR) = '{visit_id}';
-                                    """)
-                json_data_array = duckdb_conn.sql(f"""
-            SELECT json(
-                json_object(
+                    WHERE CAST(w.visitId AS VARCHAR) = '{visit_id}'
+                )
+                SELECT json(
+                    json_object(
                         'visitRequest', visitRequest,
                         'fullScanEntity', fullScanEntity,
                         'certificateChain', certificateChain,
@@ -261,8 +270,8 @@ SELECT visitId, domainName, crawlFinished  FROM '{WEB}' WHERE domainName = '{dom
                         'htmlFeatures', htmlFeatures
                     )
                 ) AS result
-            FROM joined_tls_smtp_web WHERE CAST(visitId AS VARCHAR) = '{visit_id}';""").fetchall()
-                
+                FROM joined_tls_smtp_web WHERE CAST(visitId AS VARCHAR) = '{visit_id}';""").fetchall()
+                    
 
                 current_app.logger.info(json_data_array)
                 objects = []
