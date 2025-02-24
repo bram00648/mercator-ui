@@ -197,7 +197,7 @@ SELECT visitId, domainName, crawlFinished  FROM '{WEB}' WHERE domainName = '{dom
         current_app.logger.info("retrieved_domain_name: " + str(data))
 
         result = [
-            {"visitId": str(row[0]), "domainName": row[1], "CrawlFinished": row[2]}
+            {"visitId": str(row[0]), "domainName": row[1], "crawlFinished": row[2]}
             for row in data
         ]
 

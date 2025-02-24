@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { TechnologyStat } from "@/types";
+import { RetreivedStat, TechnologyStat } from "@/types";
 
 export default defineComponent({
   props: {

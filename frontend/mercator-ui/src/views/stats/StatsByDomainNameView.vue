@@ -5,7 +5,8 @@
       <h2>Results:</h2>
       <ul>
         <li v-for="stat in stats" :key="stat.visitId">
-          {{ stat.visitId }} - {{ stat.web_domainName }}
+          {{ console.log(stats) }}
+          {{ stat.visitId }} - {{ stat.domainName }} - {{ stat.crawlFinished }}
         </li>
       </ul>
     </div>
@@ -28,7 +29,7 @@ export default {
   methods: {
     async fetchStatsByDomainName(domainName) {
       try {
-        this.stats = await statsService.fetchAllTechnologyStatsByDomainName(
+        this.stats = await statsService.fetchAllIdsAndDataByDomainName(
           domainName
         );
       } catch (error) {
