@@ -202,7 +202,91 @@ SELECT visitId, domainName, crawlFinished  FROM '{WEB}' WHERE domainName = '{dom
         ]
 
         return result
-        
+    
 
+
+
+
+    def read_parquet_data_by_visit_id(visit_id):
+        file_paths = ParquetReader.get_file_paths()
+
+        SMTP = file_paths[0]
+        TLS = file_paths[1]
+        WEB = file_paths[2]
+
+        duckdb_conn = duckdb.connect(":memory:")
+        retrieved_visit_id = duckdb_conn.sql(f"""
+    SELECT CAST(visitId AS VARCHAR) FROM '{WEB}' WHERE CAST(visitId AS VARCHAR) = '{visit_id}';
+                                                        """).fetchall()
         
-        
+        if retrieved_visit_id:
+            current_app.logger.info(f"retrieved visit id: {retrieved_visit_id[0][0]}")
+        else:
+            current_app.logger.info(f"visit id not found: {visit_id}")
+            return {"error": "Visit ID not found"}
+            
+        if retrieved_visit_id[0][0] == visit_id:
+            current_app.logger.info(f"found visit id: {retrieved_visit_id[0][0]}")
+
+            try:
+                duckdb_conn.execute(f"""
+                    CREATE TABLE joined_tls_smtp_web AS SELECT * FROM '{TLS}' tl
+                    INNER JOIN '{SMTP}' sm ON tl.visitRequest.visitId = sm.visitId
+                    INNER JOIN '{WEB}' w ON sm.visitId = w.visitId
+                    WHERE CAST(w.visitId AS VARCHAR) = '{visit_id}';
+                                    """)
+                json_data_array = duckdb_conn.sql(f"""
+            SELECT json(
+                json_object(
+                        'visitRequest', visitRequest,
+                        'fullScanEntity', fullScanEntity,
+                        'certificateChain', certificateChain,
+                        'peerCertificate', peerCertificate,
+                        'fresh', fresh,
+                        'visitId', visitId,
+                        'domainName', domainName,
+                        'timestamp', timestamp,
+                        'numConversations', numConversations,
+                        'hosts', hosts,
+                        'crawlStatus', crawlStatus,
+                        'web_visitId', visitId_1,
+                        'web_domainName', domainName_1,
+                        'startUrl', startUrl,
+                        'matchingUrl', matchingUrl,
+                        'crawlStarted', crawlStarted,
+                        'CrawlFinished', CrawlFinished,
+                        'vatValues', vatValues,
+                        'visitedUrls', visitedUrls,
+                        'pageVisits', pageVisits,
+                        'htmlFeatures', htmlFeatures
+                    )
+                ) AS result
+            FROM joined_tls_smtp_web WHERE CAST(visitId AS VARCHAR) = '{visit_id}';""").fetchall()
+                
+
+                current_app.logger.info(json_data_array)
+                objects = []
+                for i in json_data_array:
+                    current_app.logger.info("here: " + i[0] + "\n" + "\n" + "\n" + "\n" + "\n" + "\n") 
+                            
+                    objects.append(json.loads(i[0]))
+                            
+                objects_dumps_data = json.dumps(objects, indent=2)
+                        
+                current_app.logger.info(objects_dumps_data)
+                duckdb_conn.close()
+
+                return objects
+                
+
+            except Exception as e:
+                current_app.logger.error(f"Error reading Parquet file: {e}")
+                traceback.print_exc()
+                return {"error": str(e)}
+    
+        return {"error": "Visit ID not found"}
+            
+                
+
+                
+                

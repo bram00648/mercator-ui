@@ -4,7 +4,11 @@
     <div v-if="stats.length">
       <h2>Results:</h2>
       <ul>
-        <li v-for="stat in stats" :key="stat.visitId">
+        <li
+          v-for="stat in stats"
+          :key="stat.visitId"
+          @click="fetchStatsByVisitId(stat.visitId)"
+        >
           {{ console.log(stats) }}
           {{ stat.visitId }} - {{ stat.domainName }} - {{ stat.crawlFinished }}
         </li>
@@ -34,6 +38,15 @@ export default {
         );
       } catch (error) {
         console.error("Error fetching stats by domain name:", error);
+      }
+    },
+    async fetchStatsByVisitId(visitId) {
+      try {
+        this.visitStats = await statsService.fetchAllTechnologyStatsByVisitId(
+          visitId
+        );
+      } catch (error) {
+        console.error("Error fetching stats by visit ID:", error);
       }
     },
   },
