@@ -19,9 +19,7 @@ export default {
   },
   async created() {
     try {
-      this.visitStats = await statsService.fetchAllTechnologyStatsByVisitId(
-        this.visitId
-      );
+      this.visitStats = await statsService.fetchAllStatsByVisitId(this.visitId);
     } catch (error) {
       console.error("Error fetching stats by visit ID:", error);
     }

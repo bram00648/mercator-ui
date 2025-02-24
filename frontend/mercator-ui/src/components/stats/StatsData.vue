@@ -11,13 +11,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { RetreivedStat, TechnologyStat } from "@/types";
+import { RetreivedStat, Stat } from "@/types";
 
 export default defineComponent({
   props: {
     msg: String,
     stats: {
-      type: Array as PropType<TechnologyStat[]>,
+      type: Array as PropType<Stat[]>,
       required: true,
     },
   },

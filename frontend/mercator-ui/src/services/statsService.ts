@@ -1,15 +1,15 @@
 import axios from "axios";
-import { RetreivedStat, TechnologyStat } from "@/types";
+import { RetreivedStat, Stat } from "@/types";
 
 const API_BASE_URL = "http://localhost:5000/api";
 
-const fetchAllTechnologyStats = async (): Promise<TechnologyStat[]> => {
+const fetchAllStats = async (): Promise<Stat[]> => {
   try {
     const response = await axios.get(`${API_BASE_URL}/stats/`);
     console.log(response.data);
-    const data = response.data as TechnologyStat[];
+    const data = response.data as Stat[];
 
-    const transformedData: TechnologyStat[] = data.map((item) => ({
+    const transformedData: Stat[] = data.map((item) => ({
       visitId: item.visitId,
       web_domainName: item.web_domainName,
     }));
@@ -47,9 +47,9 @@ const fetchAllIdsAndDataByDomainName = async (
   }
 };
 
-const fetchAllTechnologyStatsByDomainName = async (
+const fetchAllStatsByDomainName = async (
   domainName: string
-): Promise<TechnologyStat[]> => {
+): Promise<Stat[]> => {
   try {
     const response = await axios.get(
       `${API_BASE_URL}/stats/get_stats_by_domain_name`,
@@ -58,9 +58,9 @@ const fetchAllTechnologyStatsByDomainName = async (
       }
     );
     console.log(response.data);
-    const data = response.data as TechnologyStat[];
+    const data = response.data as Stat[];
 
-    const transformedData: TechnologyStat[] = data.map((item) => ({
+    const transformedData: Stat[] = data.map((item) => ({
       visitId: item.visitId,
       web_domainName: item.web_domainName,
     }));
@@ -72,9 +72,7 @@ const fetchAllTechnologyStatsByDomainName = async (
   }
 };
 
-const fetchAllTechnologyStatsByVisitId = async (
-  visitId: string
-): Promise<TechnologyStat[]> => {
+const fetchAllStatsByVisitId = async (visitId: string): Promise<Stat[]> => {
   try {
     const response = await axios.get(
       `${API_BASE_URL}/stats/get_stats_by_visit_id`,
@@ -83,9 +81,9 @@ const fetchAllTechnologyStatsByVisitId = async (
       }
     );
     console.log(response.data);
-    const data = response.data as TechnologyStat[];
+    const data = response.data as Stat[];
 
-    const transformedData: TechnologyStat[] = data.map((item) => ({
+    const transformedData: Stat[] = data.map((item) => ({
       visitId: item.visitId,
       web_domainName: item.web_domainName,
     }));
@@ -98,10 +96,10 @@ const fetchAllTechnologyStatsByVisitId = async (
 };
 
 const statsService = {
-  fetchAllTechnologyStats,
-  fetchAllTechnologyStatsByDomainName,
+  fetchAllStats,
+  fetchAllStatsByDomainName,
   fetchAllIdsAndDataByDomainName,
-  fetchAllTechnologyStatsByVisitId,
+  fetchAllStatsByVisitId,
 };
 
 export default statsService;

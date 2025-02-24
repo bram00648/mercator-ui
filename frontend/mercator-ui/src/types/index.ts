@@ -1,4 +1,4 @@
-export interface TechnologyStat {
+export interface Stat {
   visitId: string;
   web_domainName: string;
 }
