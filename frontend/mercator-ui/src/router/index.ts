@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import StatsByDomainNameView from "../views/stats/StatsByDomainNameView.vue";
 import StatsView from "../views/stats/StatsView.vue";
-
+import statsByVisitIdView from "@/views/stats/statsByVisitIdView.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -26,9 +26,16 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   {
-    path: "/stats-By-Domain-Name",
-    name: "stats-By-Domain-Name",
+    path: "/stats/By-Domain-Name",
+    name: "statsByDomainName",
     component: StatsByDomainNameView,
+  },
+
+  {
+    path: "/stats/by-visit-id/:visitId",
+    name: "StatsByVisitIdView",
+    component: statsByVisitIdView,
+    props: true,
   },
 ];
 

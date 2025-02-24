@@ -7,9 +7,8 @@
         <li
           v-for="stat in stats"
           :key="stat.visitId"
-          @click="fetchStatsByVisitId(stat.visitId)"
+          @click="push(stat.visitId)"
         >
-          {{ console.log(stats) }}
           {{ stat.visitId }} - {{ stat.domainName }} - {{ stat.crawlFinished }}
         </li>
       </ul>
@@ -40,14 +39,8 @@ export default {
         console.error("Error fetching stats by domain name:", error);
       }
     },
-    async fetchStatsByVisitId(visitId) {
-      try {
-        this.visitStats = await statsService.fetchAllTechnologyStatsByVisitId(
-          visitId
-        );
-      } catch (error) {
-        console.error("Error fetching stats by visit ID:", error);
-      }
+    push(visitId) {
+      this.$router.push({ name: "StatsByVisitIdView", params: { visitId } });
     },
   },
 };
