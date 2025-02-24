@@ -34,9 +34,8 @@ npm run lint
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-
-### fix lint issues:  
+### fix lint issues:
 
 ```
-npx prettier --write . 
+npx prettier --write .
 ```

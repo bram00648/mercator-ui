@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import StatsByDomainNameView from "../views/stats/StatsByDomainNameView.vue";
 import StatsView from "../views/stats/StatsView.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -22,6 +23,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "stats",
 
     component: StatsView,
+  },
+
+  {
+    path: "/stats-By-Domain-Name",
+    name: "stats-By-Domain-Name",
+    component: StatsByDomainNameView,
   },
 ];
 
